@@ -1,0 +1,49 @@
+version: '3'
+services:
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      - POSTGRES_PASSWORD=postgres_password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    restart: always
+    ports:
+      - '15432:5432'
+
+  api:
+    depends_on:
+      - postgres
+    restart: always
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./api/flaskr:/app/flaskr
+      - ./api/tests:/app/tests
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres_password@postgres:15432/postgres
+    ports:
+      - '5000:5000'
+
+  nginx:
+    depends_on:
+      - api
+      #- client
+    restart: always
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    ports:
+      - '8000:8000'
+#
+# client:
+#    depends_on:
+#      - api
+#      - nginx
+#    restart: always
+#    build:
+#      context: ./client
+#      dockerfile: Dockerfile.dev
+#    volumes:
+#      - ./client:/app
+#    ports: -'3000:3000'
