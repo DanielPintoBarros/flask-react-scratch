@@ -70,3 +70,27 @@ def test_login_invalid_email(app, mocker):
     assert response.status_code == 401
     user_find_email_spy.assert_called_once_with(userEmail.lower())
     hash_password_spy.assert_not_called()
+
+
+def test_invalid_input_body_data(app):
+    client = app.test_client()
+
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    data = {"randomField": 1}
+    response = client.post("/login", json=data, headers=headers)
+
+    assert response.status_code == 422
+    assert "errors" in response.json.keys()
+
+    errors = response.json["errors"]["json"]
+    assert "email" in errors.keys()
+    assert "password" in errors.keys()
+    assert "randomField" in errors.keys()
+    expectedErrors = {
+        "email": "Missing data for required field.",
+        "password": "Missing data for required field.",
+        "randomField": "Unknown field.",
+    }
+
+    for key in expectedErrors:
+        assert expectedErrors[key] == errors[key][0]
