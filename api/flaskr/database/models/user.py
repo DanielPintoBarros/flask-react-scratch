@@ -6,7 +6,12 @@ import uuid
 
 class UserModel(db.Model):
     __tablename__ = "users"
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = db.Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default="gen_random_uuid()",
+    )
     company_id = db.Column(db.Integer)
     permission = db.Column(db.Enum(UserPermissionEnum))
     active_status = db.Column(db.Boolean)

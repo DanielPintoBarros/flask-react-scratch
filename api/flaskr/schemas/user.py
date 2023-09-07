@@ -1,12 +1,12 @@
 from marshmallow import Schema, fields
 
 
-class LoginRequestSchema(Schema):
+class AuthRequestSchema(Schema):
     email = fields.Str(required=True)
     password = fields.Str(required=True)
 
 
-class LoginResponseSchema(Schema):
+class AuthResponseSchema(Schema):
     access_token = fields.Str()
     refresh_token = fields.Str()
 

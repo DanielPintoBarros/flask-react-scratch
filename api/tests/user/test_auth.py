@@ -11,17 +11,17 @@ userUUID = uuid.uuid4()
 
 
 @pytest.fixture(scope="module")
-def userLogin():
-    userLogin = UserModel(
+def userAuth():
+    userAuth = UserModel(
         id=userUUID, email=userEmail.lower(), password=pbkdf2_sha256.hash(userPassword)
     )
-    return userLogin
+    return userAuth
 
 
-def test_login_success(app, mocker, userLogin):
+def test_auth_success(app, mocker, userAuth):
     client = app.test_client()
 
-    mocker.patch("sqlalchemy.orm.query.Query.first", return_value=userLogin)
+    mocker.patch("sqlalchemy.orm.query.Query.first", return_value=userAuth)
     user_find_email_spy = mocker.spy(UserModel, "find_by_email")
     token_gen_spy = mocker.spy(user_resource, "create_access_token")
     ref_token_gen_spy = mocker.spy(user_resource, "create_refresh_token")
@@ -29,7 +29,7 @@ def test_login_success(app, mocker, userLogin):
 
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     data = {"email": userEmail, "password": userPassword}
-    response = client.post("/login", json=data, headers=headers)
+    response = client.post("/auth", json=data, headers=headers)
 
     assert "access_token" in response.json
     assert "refresh_token" in response.json
@@ -37,26 +37,26 @@ def test_login_success(app, mocker, userLogin):
     user_find_email_spy.assert_called_once_with(userEmail.lower())
     ref_token_gen_spy.assert_called_once_with(userUUID)
     token_gen_spy.assert_called_once_with(identity=userUUID, fresh=True)
-    hash_password_spy.assert_called_once_with(userPassword, userLogin.password)
+    hash_password_spy.assert_called_once_with(userPassword, userAuth.password)
 
 
-def test_login_invalid_password(app, mocker, userLogin):
+def test_auth_invalid_password(app, mocker, userAuth):
     client = app.test_client()
 
-    mocker.patch("sqlalchemy.orm.query.Query.first", return_value=userLogin)
+    mocker.patch("sqlalchemy.orm.query.Query.first", return_value=userAuth)
     user_find_email_spy = mocker.spy(UserModel, "find_by_email")
     hash_password_spy = mocker.spy(pbkdf2_sha256, "verify")
 
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     data = {"email": userEmail, "password": invalidPassword}
-    response = client.post("/login", json=data, headers=headers)
+    response = client.post("/auth", json=data, headers=headers)
 
     assert response.status_code == 401
     user_find_email_spy.assert_called_once_with(userEmail.lower())
-    hash_password_spy.assert_called_once_with(invalidPassword, userLogin.password)
+    hash_password_spy.assert_called_once_with(invalidPassword, userAuth.password)
 
 
-def test_login_invalid_email(app, mocker):
+def test_auth_invalid_email(app, mocker):
     client = app.test_client()
 
     mocker.patch("sqlalchemy.orm.query.Query.first", return_value=None)
@@ -65,7 +65,7 @@ def test_login_invalid_email(app, mocker):
 
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     data = {"email": userEmail, "password": userPassword}
-    response = client.post("/login", json=data, headers=headers)
+    response = client.post("/auth", json=data, headers=headers)
 
     assert response.status_code == 401
     user_find_email_spy.assert_called_once_with(userEmail.lower())
@@ -77,7 +77,7 @@ def test_invalid_input_body_data(app):
 
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     data = {"randomField": 1}
-    response = client.post("/login", json=data, headers=headers)
+    response = client.post("/auth", json=data, headers=headers)
 
     assert response.status_code == 422
     assert "errors" in response.json.keys()

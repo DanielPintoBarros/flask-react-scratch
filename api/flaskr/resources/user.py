@@ -8,8 +8,8 @@ from flask_jwt_extended import (
 from flask_smorest import Blueprint, abort
 from flaskr.database.models.user import UserModel
 from flaskr.schemas.user import (
-    LoginRequestSchema,
-    LoginResponseSchema,
+    AuthRequestSchema,
+    AuthResponseSchema,
     TokenRefreshResponseSchema,
 )
 from passlib.hash import pbkdf2_sha256
@@ -18,14 +18,14 @@ from passlib.hash import pbkdf2_sha256
 blp = Blueprint("Users", "users", description="Operations on users")
 
 
-@blp.route("/login")
-class UserLogin(MethodView):
-    @blp.arguments(LoginRequestSchema)
-    @blp.response(200, LoginResponseSchema)
-    def post(self, login_data):
-        user = UserModel.find_by_email(login_data["email"].lower())
+@blp.route("/auth")
+class UserAuth(MethodView):
+    @blp.arguments(AuthRequestSchema)
+    @blp.response(200, AuthResponseSchema)
+    def post(self, auth_data):
+        user = UserModel.find_by_email(auth_data["email"].lower())
 
-        if user and pbkdf2_sha256.verify(login_data["password"], user.password):
+        if user and pbkdf2_sha256.verify(auth_data["password"], user.password):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(user.id)
             return {"access_token": access_token, "refresh_token": refresh_token}, 200
