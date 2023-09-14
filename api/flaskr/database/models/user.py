@@ -12,15 +12,16 @@ class UserModel(db.Model):
         default=uuid.uuid4,
         server_default="gen_random_uuid()",
     )
-    company_id = db.Column(db.Integer)
     permission = db.Column(db.Enum(UserPermissionEnum))
-    active_status = db.Column(db.Boolean)
-    name = db.Column(db.String(255))
+    first_name = db.Column(db.String(255))
+    last_name = db.Column(db.String(255))
     email = db.Column(db.String(255))  # unique
-    email_verified_at = db.Column(db.Time)
     password = db.Column(db.String(255))
-    avatar_url = db.Column(db.String(255))
 
     @classmethod
     def find_by_email(cls, email: str) -> "UserModel":
         return cls.query.filter_by(email=email).first()
+
+    @property
+    def full_name(self) -> str:
+        return " ".join([self.first_name, self.last_name])

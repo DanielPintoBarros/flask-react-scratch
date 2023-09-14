@@ -17,6 +17,6 @@ ADD ./tests /app/tests
 
 RUN black --check .
 RUN pytest -v --cov --cov-fail-under=100
-RUN echo 'flask db upgrade -d flaskr/database/migrations && flask run' > /app/apply_migration_and_run.sh
+RUN echo 'flask db upgrade -d flaskr/database/migrations && flask run --host=0.0.0.0 --debug' > /app/apply_migration_and_run.sh
 
 CMD ["/bin/sh", "/app/apply_migration_and_run.sh" ]

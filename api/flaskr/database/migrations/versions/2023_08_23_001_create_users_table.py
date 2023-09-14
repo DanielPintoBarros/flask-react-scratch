@@ -1,4 +1,4 @@
-"""empty message
+"""Creating users table
 
 Revision ID: 3e02364ebe70
 Revises: 
@@ -26,18 +26,14 @@ def upgrade():
             default="gen_random_uuid()",
             nullable=False,
         ),
-        sa.Column("company_id", sa.Integer(), nullable=True),
         sa.Column(
             "permission",
             sa.Enum("ADMIN", "USER", name="userpermissionenum"),
             nullable=True,
         ),
-        sa.Column("active_status", sa.Boolean(), nullable=True),
         sa.Column("name", sa.String(length=255), nullable=True),
         sa.Column("email", sa.String(length=255), nullable=True),
-        sa.Column("email_verified_at", sa.Time(), nullable=True),
         sa.Column("password", sa.String(length=255), nullable=True),
-        sa.Column("avatar_url", sa.String(length=255), nullable=True),
         sa.PrimaryKeyConstraint("id"),
     )
     # ### end Alembic commands ###
