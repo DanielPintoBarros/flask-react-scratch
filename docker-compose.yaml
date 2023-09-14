@@ -8,7 +8,7 @@ services:
       - POSTGRES_DB=postgres
     restart: always
     ports:
-      - '15432:5432'
+      - '13000:5432'
 
   api:
     depends_on:
@@ -21,29 +21,27 @@ services:
       - ./api/flaskr:/app/flaskr
       - ./api/tests:/app/tests
     environment:
-      - DATABASE_URL=postgres://postgres:postgres_password@postgres:15432/postgres
+      - DATABASE_URL=postgresql://postgres:postgres_password@postgres:5432/postgres
+      - JWT_SECRET_KEY=devenv
     ports:
       - '5000:5000'
 
   nginx:
-    depends_on:
-      - api
-      #- client
     restart: always
     build:
       context: ./nginx
       dockerfile: Dockerfile.dev
     ports:
       - '8000:8000'
-#
-# client:
-#    depends_on:
-#      - api
-#      - nginx
-#    restart: always
-#    build:
-#      context: ./client
-#      dockerfile: Dockerfile.dev
-#    volumes:
-#      - ./client:/app
-#    ports: -'3000:3000'
+
+  client:
+    depends_on:
+      - api
+    restart: always
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./client:/app
+    ports:
+      - '3000:3000'

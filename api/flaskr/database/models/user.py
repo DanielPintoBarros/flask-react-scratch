@@ -21,7 +21,3 @@ class UserModel(db.Model):
     @classmethod
     def find_by_email(cls, email: str) -> "UserModel":
         return cls.query.filter_by(email=email).first()
-
-    @property
-    def full_name(self) -> str:
-        return " ".join([self.first_name, self.last_name])

@@ -4,8 +4,10 @@
 
 clean:
 	rm -rf **/__pycache__
+
 code-format:
 	black .
+
 install:
 	pip install -r requirements.txt
 
@@ -23,6 +25,9 @@ migration-downgrade:
 
 run:
 	flask run
+
+run-dev: 
+	flask run --host=0.0.0.0 --debug
 
 test:
 	pytest -v --cov

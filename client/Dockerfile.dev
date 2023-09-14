@@ -1,0 +1,13 @@
+FROM node:alpine
+
+WORKDIR /app
+
+COPY package.json /app/package.json
+RUN npm install
+RUN npx browserslist@latest --update-db
+
+ADD ./src /app/src
+ADD ./public /app/public
+ADD ./tests /app/tests
+
+CMD ["npm", "start"]
