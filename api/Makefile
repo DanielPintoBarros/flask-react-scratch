@@ -30,7 +30,7 @@ run-dev:
 	flask run --host=0.0.0.0 --debug
 
 test:
-	pytest -v --cov
+	pytest -v --cov --cov-fail-under=100
 
 test-generate-report:
 	pytest --cov-report test-coverage-report --cov .
