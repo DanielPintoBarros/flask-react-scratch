@@ -13,8 +13,8 @@ class UserModel(db.Model):
         server_default="gen_random_uuid()",
     )
     permission = db.Column(db.Enum(UserPermissionEnum))
-    first_name = db.Column(db.String(255))
-    last_name = db.Column(db.String(255))
+    first_name = db.Column(db.String(127))
+    last_name = db.Column(db.String(127))
     email = db.Column(db.String(255))  # unique
     password = db.Column(db.String(255))
 
