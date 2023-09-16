@@ -101,7 +101,6 @@ def create_app(psql_url=None):
             401,
         )
 
-    """
     @jwt.needs_fresh_token_loader
     def token_not_fresh_callback(jwt_header, jwt_payload):
         return (
@@ -113,7 +112,6 @@ def create_app(psql_url=None):
             ),
             401,
         )
-    """
 
     @jwt.revoked_token_loader
     def revoked_token_callback(jwt_header, jwt_payload):

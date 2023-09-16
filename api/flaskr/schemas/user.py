@@ -17,3 +17,9 @@ class LogoutRequestSchema(Schema):
 
 class TokenRefreshResponseSchema(Schema):
     access_token = fields.Str()
+
+
+class ChangePasswordRequestSchema(Schema):
+    old_password = fields.Str(required=True)
+    confirm_old_password = fields.Str(required=True)
+    new_password = fields.Str(required=True)

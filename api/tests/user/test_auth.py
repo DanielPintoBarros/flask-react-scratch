@@ -13,7 +13,12 @@ userUUID = uuid.uuid4()
 @pytest.fixture(scope="module")
 def userAuth():
     userAuth = UserModel(
-        id=userUUID, email=userEmail.lower(), password=pbkdf2_sha256.hash(userPassword)
+        id=userUUID,
+        email=userEmail.lower(),
+        password=pbkdf2_sha256.hash(userPassword),
+        first_name="test",
+        last_name="test",
+        permission="USER",
     )
     return userAuth
 

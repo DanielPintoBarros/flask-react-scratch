@@ -19,5 +19,9 @@ class UserModel(psql.Model):
     password = psql.Column(psql.String(255))
 
     @classmethod
+    def find_by_id(cls, _id: str) -> "UserModel":
+        return cls.query.filter_by(id=_id).first()
+
+    @classmethod
     def find_by_email(cls, email: str) -> "UserModel":
         return cls.query.filter_by(email=email).first()

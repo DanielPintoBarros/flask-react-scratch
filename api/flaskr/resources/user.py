@@ -9,13 +9,14 @@ from flask_jwt_extended import (
     decode_token,
 )
 from flask_smorest import Blueprint, abort
-from flaskr.database.db import redis_client
+from flaskr.database.db import psql, redis_client
 from flaskr.database.models.user import UserModel
 from flaskr.schemas.user import (
     AuthRequestSchema,
     AuthResponseSchema,
     LogoutRequestSchema,
     TokenRefreshResponseSchema,
+    ChangePasswordRequestSchema,
 )
 from passlib.hash import pbkdf2_sha256
 
@@ -77,4 +78,26 @@ class UserLogout(MethodView):
             redis_client.expire(refresh_token, REFRESH_TOKEN_EXPIRATION_TIME)
         except:
             abort(400, message="refresh token not valid")
-        return None, 200
+        return {"message": "logged out."}, 200
+
+
+@blp.route("/changePassword")
+class UserChangePassword(MethodView):
+    @blp.arguments(ChangePasswordRequestSchema)
+    @blp.response(200)
+    @jwt_required(fresh=True)
+    def post(self, change_password_data):
+        user_id = get_jwt_identity()
+        user = UserModel.find_by_id(user_id)
+
+        if change_password_data["old_password"] == change_password_data[
+            "confirm_old_password"
+        ] and pbkdf2_sha256.verify(change_password_data["old_password"], user.password):
+            user.password = pbkdf2_sha256.hash(change_password_data["new_password"])
+            try:
+                psql.session.add(user)
+                psql.session.commit()
+                return {"message": "Password changed."}, 200
+            except:
+                abort(500, message="Database conection error.")
+        abort(400, message="Wrong password.")
