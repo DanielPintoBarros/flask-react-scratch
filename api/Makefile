@@ -24,16 +24,13 @@ migration-downgrade:
 	flask db downgrade -d flaskr/database/migrations
 
 run:
-	flask run
-
-run-dev: 
 	flask run --host=0.0.0.0 --debug
 
 test:
 	pytest -v --cov --cov-fail-under=100
 
-test-generate-report:
-	pytest --cov-report test-coverage-report --cov .
+test-report:
+	pytest --cov-report html --cov .
 
 all:
 	make code-format

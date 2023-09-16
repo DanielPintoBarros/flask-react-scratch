@@ -49,8 +49,9 @@ def test_refresh_token_no_token(app):
     assert response.json["error"] == "authorization_required"
 
 
-def test_refresh_token_success(app, refresh_token_context):
+def test_refresh_token_success(app, mocker, refresh_token_context):
     client = app.test_client()
+    mocker.patch("redis.Redis.get", return_value=None)
 
     headers = {
         "Content-Type": "application/json",

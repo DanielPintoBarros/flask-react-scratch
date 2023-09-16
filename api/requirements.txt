@@ -2,6 +2,7 @@ flask
 Flask-JWT-Extended
 Flask-Smorest
 Flask-SQLAlchemy
+Flask-Redis
 passlib
 marshmallow
 python-dotenv
@@ -13,3 +14,4 @@ pytest-flask
 pytest-mock
 pytest-cov
 black
+mockredis

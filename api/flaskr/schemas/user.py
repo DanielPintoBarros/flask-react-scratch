@@ -11,5 +11,9 @@ class AuthResponseSchema(Schema):
     refresh_token = fields.Str()
 
 
+class LogoutRequestSchema(Schema):
+    refresh_token = fields.Str(required=True)
+
+
 class TokenRefreshResponseSchema(Schema):
     access_token = fields.Str()

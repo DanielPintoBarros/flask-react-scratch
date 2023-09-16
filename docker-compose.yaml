@@ -6,13 +6,21 @@ services:
       - POSTGRES_PASSWORD=postgres_password
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
     restart: always
     ports:
-      - '13000:5432'
+      - '15432:5432'
 
+  redis:
+    image: 'redis:latest'
+    restart: always
+    ports:
+      - '6379:6379'
   api:
     depends_on:
       - postgres
+      - redis
     restart: always
     build:
       context: ./api
@@ -22,26 +30,27 @@ services:
       - ./api/tests:/app/tests
     environment:
       - DATABASE_URL=postgresql://postgres:postgres_password@postgres:5432/postgres
+      - REDIS_URL=redis://:@redis:6379/0
       - JWT_SECRET_KEY=devenv
+      - ACCESS_TOKEN_EXPIRES=3600
+      - REFRESH_TOKEN_EXPIRES=2592000
     ports:
       - '5000:5000'
-
-  nginx:
-    restart: always
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile.dev
-    ports:
-      - '8000:8000'
-
-  client:
-    depends_on:
-      - api
-    restart: always
-    build:
-      context: ./client
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./client:/app
-    ports:
-      - '3000:3000'
+#  nginx:
+#    restart: always
+#    build:
+#      context: ./nginx
+#      dockerfile: Dockerfile.dev
+#    ports:
+#      - '8000:8000'
+#  client:
+#    depends_on:
+#      - api
+#    restart: always
+#    build:
+#      context: ./client
+#      dockerfile: Dockerfile.dev
+#    volumes:
+#      - ./client:/app
+#    ports:
+#      - '3000:3000'
