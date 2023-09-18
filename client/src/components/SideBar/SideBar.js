@@ -13,13 +13,13 @@ const SideBar = () => {
   ];
 
   return (
-    <div className="bg-dark col-auto col-md-2 min-vh-100 d-flex justify-content-between flex-column">
+    <div className="bg-dark col-auto vh-100 d-flex justify-content-between flex-column text-center text-sm-start pe-0">
       <div>
         <Link
           to={'/'}
           className="text-decoration-none text-white d-none d-sm-inline d-flex align-itemcenter ms-3 mt-2"
         >
-          <span className="ms-1 py-2 py-sm-0 fs-4 d-non d-sm-inline">
+          <span className="ms-1 py-2 py-sm-0 fs-4 d-none d-sm-inline">
             Brand
           </span>
         </Link>

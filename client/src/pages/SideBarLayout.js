@@ -9,10 +9,10 @@ const SideBarLayout = () => {
   useEffect(() => {
     const isLogged = !!getAuthToken();
     if (!isLogged) navigate('/auth');
-  }, []);
+  });
 
   return (
-    <main className="d-flex flex-nowrap">
+    <main className="d-flex flex-nowrap row vh-100">
       <SideBar />
       <Outlet />
     </main>

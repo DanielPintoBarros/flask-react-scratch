@@ -6,10 +6,11 @@ import { json, redirect, useNavigate } from 'react-router-dom';
 
 const AuthPage = () => {
   const navigate = useNavigate();
+
   useEffect(() => {
     const isLogged = !!getAuthToken();
     if (isLogged) navigate('/');
-  }, []);
+  });
   return <AuthForm />;
 };
 
